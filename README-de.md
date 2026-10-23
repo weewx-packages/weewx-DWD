@@ -8,7 +8,7 @@ Paketkorrekturen nicht. Dienste und eigenständige Programme haben
 unterschiedliche Installationswege.
 
 
-* [English Version](https://github.com/roe-dl/weewx-DWD/blob/master/README-en.md)
+* [English version](README.md)
 * Icons und Symbole im SVG-Vektorgraphikformat siehe [images](https://github.com/roe-dl/weathericons)
 
 Wettersymbole in WeeWX darstellen sowie
@@ -429,13 +429,13 @@ des ARS auf der Kommandozeile angegeben werden:
 
 Aufruf bei WeeWX-Paketinstallation:
 ```shell
-bbk-warnings --weewx
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/bbk-warnings --weewx
 ```
 
 Aufruf ohne WeeWX oder bei mehreren WeeWX-Installationen auf dem Rechner
 oder `pip`-Installation:
 ```shell
-bbk-warnings --config=/pfad/zur/Konfigurationsdatei
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/bbk-warnings --config=/pfad/zur/Konfigurationsdatei
 ```
 
 Aufruf, wenn Ausführbarmachen von Dateien nicht erlaubt ist:
@@ -447,21 +447,24 @@ python3 /pfad/zur/Programmdatei/capwarnings.py --config=/pfad/zur/Konfigurations
 
 ## /etc/cron.hourly/dwd
 
-Dieses Script sorgt dafür, daß Scripte regelmäßig aufgerufen werden.
+Dieses optionale Beispiel plant regelmäßige Abrufe. Ersetzen Sie die
+Platzhalter durch Ihre Stations- und Archivpfade und verwenden Sie den
+vollständigen Pfad zu WeeWXs Python-Interpreter. Der Kataloginstaller
+legt keinen Cronjob an.
 
 Zum Abruf von Wetterwarnungen wird
 ```shell
-/usr/local/bin/dwd-cap-warnings --weewx --resolution=city
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/dwd-cap-warnings --weewx --resolution=city
 ```
 bzw.
 ```shell
-/usr/local/bin/dwd-cap-warnings --weewx --resolution=county
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/dwd-cap-warnings --weewx --resolution=county
 ```
 verwendet.
 
 Soll `dwd-mosmix` benutzt werden, muß dafür in der Datei die Zeile
 ```shell
-/usr/local/bin/dwd-mosmix --weewx Station
+PYTHONPATH=/path/to/station/bin python /path/to/extracted/usr/local/bin/dwd-mosmix --weewx Station
 ```
 hinzugefügt werden. Wenn die Vorhersage für mehrere Stationen benötigt wird, ist für jede Station ein Aufruf einzutragen.
 Mehrere Ausgabeformate für ein und dieselbe Station sind aber in einem
@@ -934,7 +937,7 @@ WMO-Code-Tabelle 4677 ww | WMO-Code-Tabelle 4680 w<sub>a</sub>w<sub>a</sub>
 
 Mittels
 ```shell
-python3 /usr/share/weewx/user/weathercodes.py --write-svg Zielverzeichnis
+PYTHONPATH=/path/to/station/bin python -m user.weathercodes --write-svg Zielverzeichnis
 ```
 können alle WMO-Symbole als SVG-Dateien in "Zielverzeichnis" geschrieben
 werden. Diese Dateien können dann mit dem `<img>`-Tag in Webseiten
@@ -942,8 +945,8 @@ eingefügt werden.
 
 Mit
 ```shell
-python3 /usr/share/weewx/user/weathercodes.py --print-ww-tab >wmo4677.inc
-python3 /usr/share/weewx/user/weathercodes.py --print-wawa-tab >wmo4680.inc
+PYTHONPATH=/path/to/station/bin python -m user.weathercodes --print-ww-tab >wmo4677.inc
+PYTHONPATH=/path/to/station/bin python -m user.weathercodes --print-wawa-tab >wmo4680.inc
 ```
 kann eine HTML-Tabelle der Symbole zum Einfügen in Webseiten erzeugt werden.
 
@@ -980,9 +983,9 @@ Vorhersage-Dateien.
 
 ## Konfiguration in weewx.conf
 
-Die Eintragungen in weewx.conf müssen mit der Hand vorgenommen werden. Es
-gibt gegenwärtig kein Installationsprogramm dafür. Nur für Funktionen,
-die tatsächlich genutzt werden, müssen die Abschnitte vorhanden sein.
+Der Kataloginstaller legt die Grundkonfiguration an. Ergänzen Sie die
+gewünschten Datenquellen und Pfade von Hand. Nur für tatsächlich genutzte
+Funktionen müssen die Abschnitte vorhanden sein.
 
 > [!CAUTION]
 > Bitte keine unbenutzten Beispiele in die echte `weewx.conf` aufnehmen!
@@ -1425,7 +1428,7 @@ Es ist darüber hinaus ein Account nötig.
 Eine Liste der Luftqualitätsmeßstationen des deutschen Umweltbundesamtes (UBA)
 erhält man mit
 ```shell
-usr/local/bin/dwd-mosmix --print-uba=meta,measure
+PYTHONPATH=/path/to/station/bin python /path/to/extracted/usr/local/bin/dwd-mosmix --print-uba=meta,measure
 ```
 
 Beim Aufruf der Programme muß `dwd-cap-warnings` ungedingt vor `dwd-mosmix`
@@ -1434,13 +1437,13 @@ verarbeitet.
 
 In `/etc/cron.hourly/dwd` ist dann die folgende Zeile hinzufügen:
 ```shell
-/usr/local/bin/dwd-mosmix --weewx --belchertown Stationsname
+PYTHONPATH=/path/to/station/bin python /path/to/extracted/usr/local/bin/dwd-mosmix --weewx --belchertown Stationsname
 ```
 
-Soll das Programm zu Testzwecken von der Kommandozeile aufgerufen werden,
-ist `sudo` nötig:
+Verwenden Sie auch auf der Kommandozeile WeeWXs Python-Umgebung. Das
+aufrufende Konto benötigt Schreibrechte auf die konfigurierten Ausgaben:
 ```shell
-sudo /usr/local/bin/dwd-mosmix --weewx --belchertown Stationsname
+PYTHONPATH=/path/to/station/bin python /path/to/extracted/usr/local/bin/dwd-mosmix --weewx --belchertown Stationsname
 ```
 
 ## Wettervorhersage als Diagramm
@@ -1462,7 +1465,7 @@ Um damit Diagramme darstellen zu können, muß die Datenbank in
         database = dwd_sqlite
         table_name = forecast
         manager = weewx.manager.Manager
-        schema = schemas.dwd.schema
+        schema = user.dwd_schema.schema
 [Databases]
     ...
     [[dwd_sqlite]]
@@ -1470,11 +1473,9 @@ Um damit Diagramme darstellen zu können, muß die Datenbank in
         database_type = SQLite
 ```
 
-Ab WeeWX 5.2 muß anstelle von `schemas.dwd.schema`
-`weewx.schemas.dwd.schema` geschrieben werden.
-
-In das Verzeichnis `schemas` muß eine Datei `dwd.py` geschrieben
-werden, die folgenden Inhalt hat:
+Legen Sie `dwd_schema.py` im `bin/user`-Verzeichnis der Station mit
+folgendem Inhalt an. Das stellt `user.dwd_schema.schema` bereit, ohne
+das installierte WeeWX-Pythonpaket zu ändern:
 ```python
 schema = [('dateTime','INTEGER NOT NULL PRIMARY KEY'),
           ('usUnits','INTEGER NOT NULL'),

@@ -424,13 +424,13 @@ JSON file for further processing.
 To invoke in case of WeeWX packet installation:
 
 ```shell
-bbk-warnings --weewx
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/bbk-warnings --weewx
 ```
 
 To invoke in case of WeeWX `pip` installation or no WeeWX present:
 
 ```shell
-bbk-warnings --config=/path/to/your/config_file
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/bbk-warnings --config=/path/to/your/config_file
 ```
 
 To invoke in case you cannot make files executable:
@@ -446,13 +446,13 @@ This script is to download and process warnings of the Canadian MSC.
 To invoke in case of WeeWX packet installation:
 
 ```shell
-msc-warnings --weewx
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/msc-warnings --weewx
 ```
 
 To invoke in case of WeeWX `pip` installation or no WeeWX present:
 
 ```shell
-msc-warnings --config=/path/to/your/config_file
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/msc-warnings --config=/path/to/your/config_file
 ```
 
 To invoke in case you cannot make files executable:
@@ -485,14 +485,15 @@ This script is deprecated.
 If you only use the WeeWX service and/or the searchlist extension
 out of this package, you do not need this script.
 
-The script takes care to invoke all the scripts hourly. It should
-contain:
+To schedule downloads, adapt this example to your station and extracted
+archive paths. Use the Python interpreter from WeeWX's environment. The
+catalog does not install `wget-dwd` or `dwd-mosmix` into `/usr/local/bin`:
 
 ```
 #!/bin/bash
-/usr/local/bin/wget-dwd 2>/dev/null
-/usr/local/bin/dwd-cap-warnings --weewx --resolution=city 2>/dev/null >/dev/null
-/usr/local/bin/dwd-mosmix --weewx --daily --hourly XXXXX 2>/dev/null >/dev/null
+/path/to/extracted/usr/local/bin/wget-dwd 2>/dev/null
+PYTHONPATH=/path/to/station/bin python /path/to/station/bin/commands/dwd-cap-warnings --weewx --resolution=city 2>/dev/null >/dev/null
+PYTHONPATH=/path/to/station/bin python /path/to/extracted/usr/local/bin/dwd-mosmix --weewx --daily --hourly XXXXX 2>/dev/null >/dev/null
 ```
 
 Replace XXXXX by the appropriate station id or geographic coordinates
@@ -883,14 +884,14 @@ WMO code table  4677 ww | WMO code table 4680 w<sub>a</sub>w<sub>a</sub>
 
 With
 ```
-python3 /usr/share/weewx/user/weathercodes.py --write-svg target_directory
+PYTHONPATH=/path/to/station/bin python -m user.weathercodes --write-svg target_directory
 ```
 alle the WMO symbols can be written to the target directory in SVG format.
 
 With
 ```
-python3 /usr/share/weewx/user/weathercodes.py --print-ww-tab >wmo4677.inc
-python3 /usr/share/weewx/user/weathercodes.py --print-wawa-tab >wmo4680.inc
+PYTHONPATH=/path/to/station/bin python -m user.weathercodes --print-ww-tab >wmo4677.inc
+PYTHONPATH=/path/to/station/bin python -m user.weathercodes --print-wawa-tab >wmo4680.inc
 ```
 you can create a HTML table of the symbols.
 
@@ -1172,7 +1173,7 @@ There is a separate key for the unit system to be used for the forecast
 of the Belchertown skin. Set `forecast_units = si` for metric units
 or `forecast_units = us` for U.S. units.
 
-Additionally you need to add a sub-section in the `[DeutscherWetterdienst]`
+Additionally you need to add a sub-section in the `[WeatherServices]`
 section of `weewx.conf`.
 
 ```
@@ -1221,7 +1222,7 @@ Additionally you nead an account with them.
 A list of air quality stations of the german Umweltbundesamt (UBA)
 can be acquired by
 ```
-usr/local/bin/dwd-mosmix --print-uba=meta,measure
+PYTHONPATH=/path/to/station/bin python /path/to/extracted/usr/local/bin/dwd-mosmix --print-uba=meta,measure
 ```
 
 If you want to use warnings, you need to call `dwd-cap-warnings` before
@@ -1245,7 +1246,7 @@ as follows:
         database = dwd_sqlite
         table_name = forecast
         manager = weewx.manager.Manager
-        schema = schemas.dwd.schema
+        schema = user.dwd_schema.schema
 [Databases]
     ...
     [[dwd_sqlite]]
@@ -1253,11 +1254,9 @@ as follows:
         database_type = SQLite
 ```
 
-From WeeWX 5.2 on replace `schemas.dwd.schema` by
-`weewx.schemas.dwd.schema`.
-
-Then write a file named `dwd.py` into the `schemas` directory of
-WeeWX, containing the following:
+Create `dwd_schema.py` in the station's `bin/user` directory with the
+following content. This supplies `user.dwd_schema.schema` without changing
+WeeWX's installed Python package:
 
 ```
 schema = [('dateTime','INTEGER NOT NULL PRIMARY KEY'),
