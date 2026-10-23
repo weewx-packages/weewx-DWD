@@ -1,6 +1,13 @@
 # weewx-DWD
 
-[deutsche Version](https://github.com/roe-dl/weewx-DWD/blob/master/README-de.md)
+This repository mirrors [roe-dl/weewx-DWD](https://github.com/roe-dl/weewx-DWD).
+The separately repaired catalog archive `0.0.0.post20261022` installs weather
+service modules, weather-code search lists and CAP warning tools for WeeWX
+5.5–5.x and Python 3.10–3.14. A source-branch ZIP lacks these packaging repairs.
+Service installation and standalone command deployment are separate steps.
+
+
+[deutsche Version](README-de.md)
 
 display weather icons in WeeWX as well as
 download weather and warning data and use them in WeeWX and skins.
@@ -11,7 +18,7 @@ download weather and warning data and use them in WeeWX and skins.
 
 Independent of certain weather services you can display weather
 icons and symbols in skins by using the searchlist extension
-[`$presentweather`](https://github.com/roe-dl/weewx-DWD/wiki/$presentweather()-(English)), 
+[`$presentweather`](https://github.com/roe-dl/weewx-DWD/wiki/$presentweather()-(English)),
 provided by this WeeWX extension.
 
 ### Download and process data from weather services
@@ -21,7 +28,7 @@ With this extension you can receive and process the following data:
 
   See [Query Open Geospatial Consortium (OGC) Servers](https://github.com/roe-dl/weewx-DWD/wiki/Query-Open-Geospatial-Consortium-(OGC)-Servers-(English))
 
-  * maps, satellite pictures, etc. 
+  * maps, satellite pictures, etc.
 * from **OpenWeather**
 
   See [OpenWeather wiki article](https://github.com/roe-dl/weewx-DWD/wiki/OpenWeather-(English))
@@ -54,7 +61,7 @@ With this extension you can receive and process the following data:
   * other data they provide on their open data server
   * OGC maps
 * from **Finnish Meteorological Institute** (FMI)
-  * [radar maps, traffic state, etc](./wiki/Query-Open-Geospatial-Consortium-(OGC)-Servers-(English)#finnish-meteorological-institute-fmi)
+  * [radar maps, traffic state, etc](https://github.com/roe-dl/weewx-DWD/wiki/Query-Open-Geospatial-Consortium-(OGC)-Servers-(English)#finnish-meteorological-institute-fmi)
 * from **Deutscher Wetterdienst** (DWD)
 
   See [DWD wiki page](https://github.com/roe-dl/weewx-DWD/wiki/Deutscher-Wetterdienst)
@@ -75,7 +82,7 @@ With this extension you can receive and process the following data:
     (`user.weatherservices.DWDservice`)
 * from Zentralanstalt für Meteorologie und Geodynamik (ZAMG) / **GeoSphere
   Austria**
-  
+
   See [ZAMG wiki page](https://github.com/roe-dl/weewx-DWD/wiki/Zentralanstalt-für-Meteorologie-und-Geodynamik-(ZAMG)---GeoSphere-Austria)
 
   * actual readings of the ZAMG weather stations in Austria
@@ -85,7 +92,7 @@ With this extension you can receive and process the following data:
 
 Data will be processed to:
 * HTML files (`*.inc`) to include in skins with `#include`
-* JSON files (`*.json`) to automatically process 
+* JSON files (`*.json`) to automatically process
 * `forecast.json` for direct use with Belchertown skin
 * observation types in WeeWX
 * maps (in case of radar data)
@@ -94,8 +101,8 @@ Data will be processed to:
 > If you look for a skin that supports weewx-DWD directly, you may want to
 > have a look at
 > [Weather Data Center weewx-wdc](https://github.com/Daveiano/weewx-wdc).
-> There is a detailed instruction how to configure this extension for 
-> that skin in 
+> There is a detailed instruction how to configure this extension for
+> that skin in
 > [their wiki](https://github.com/Daveiano/weewx-wdc/wiki/Support-for-weewx-DWD).
 
 For icons and symbols in SVG vector graphic format see [images](https://github.com/roe-dl/weathericons).
@@ -153,7 +160,7 @@ from Tom Keffer.
 
 ## Prerequisites
 
-You may install `GeoPy`. It is useful, but not required. 
+You may install `GeoPy`. It is useful, but not required.
 In case you installed WeeWX by `pip` you may have to install `requests`
 as well.
 
@@ -173,79 +180,66 @@ pip install requests
 
 ## Installation
 
-1) Download the extension from Github
+Install `requests` in WeeWX's Python environment. `geopy` is optional for
+geographic helper functions.
 
-   ```shell
-   wget -O weewx-dwd.zip https://github.com/roe-dl/weewx-DWD/archive/master.zip
-   ```
-
-2) Installation
-
-   Installation at WeeWX up to version 4.X:
-
-   ```shell
-   sudo wee_extension --install weewx-dwd.zip
-   ```
-
-   Installation at WeeWX from version 5.0 on after WeeWX packet installation:
-
-   ```shell
-   sudo weectl extension install weewx-dwd.zip
-   ```
-
-   Installation at WeeWX from version 5.0 on after WeeWX pip installation:
-
-   ```shell
-   source ~/weewx-venv/bin/activate
-   weectl extension install weewx-dwd.zip
-   ```
-
-> [!CAUTION]
-> You must not use `sudo` if you installed WeeWX by `pip`.
-
-3) Adapt configuration
-
-   see section [Configuration](#configuration)
-
-4) restart weewx
-
-   for SysVinit systems:
-
-   ```shell
-   sudo /etc/init.d/weewx stop
-   sudo /etc/init.d/weewx start
-   ```
-
-   for systemd systems:
-
-   ```shell
-   sudo systemctl stop weewx
-   sudo systemctl start weewx
-   ```
-
-
-Manual installation:
-
-Unpack the file
-
-Copy all files in `bin/user/` 
-into the extension directory of WeeWX. For WeeWX 4 that is often
-`/usr/share/weewx/user`. For WeeWX 5 `/etc/weewx/bin/user` 
-is common.
-
-Copy `usr/local/bin/dwd-mosmix`, `usr/local/bin/dwd-warnings`,
-`usr/local/bin/html2ent.ansi`, and `usr/local/bin/wget-dwd` to
-`/usr/local/bin` and make it executable by `chmod +x file_name`.
-
-Create the following links:
-```
-sudo ln -s /usr/share/weewx/user/capwarnings.py /usr/local/bin/bbk-warnings
-sudo ln -s /usr/share/weewx/user/capwarnings.py /usr/local/bin/dwd-cap-warnings
-sudo ln -s /usr/share/weewx/user/capwarnings.py /usr/local/bin/msc-warnings
+```sh
+python -m pip install requests
+weectl extension install https://github.com/weewx-packages/catalog/releases/download/dwd/v0.0.0.post20261022/dwd-0.0.0.post20261022.tar.gz
 ```
 
-If you installed WeeWX into another directory than `/usr/share/weewx`
-then you have to adapt the path in the above commands.
+Use the `weectl` from your WeeWX environment and add
+`--config /path/to/weewx.conf` for a different station. Package installations
+may require `sudo`; activate the WeeWX environment for pip installations.
+
+The installer registers `user.weatherservices.DWDservice` in `data_services`
+and installs the eight modules from `bin/user` into the station's user root.
+Configure `[WeatherServices]` using the product-specific examples below.
+Replace the output path, icon paths and desired station/product placeholders.
+The output directory must be writable by WeeWX. Restart WeeWX yourself, for
+example `sudo systemctl restart weewx` on systemd.
+
+To use weather symbols alone, add the search list to the skin:
+
+```ini
+[CheetahGenerator]
+    search_list_extensions = user.weathercodes.WeatherSearchList
+```
+
+Append to existing search lists. The reference below explains the tags and
+the configuration for data providers.
+
+### Standalone commands
+
+The catalog installer links `dwd-cap-warnings`, `bbk-warnings` and
+`msc-warnings` under the station's `bin/commands`, not `/usr/local/bin`.
+Use their full paths and, if needed, set `PYTHONPATH` to the station's `bin`.
+For the usual package layout:
+
+```sh
+PYTHONPATH=/etc/weewx/bin python /etc/weewx/bin/commands/dwd-cap-warnings --help
+```
+
+`dwd-mosmix` and legacy helpers remain in `usr/local/bin` in the source/archive;
+the catalog installer does not copy those files into system directories.
+For MOSMIX, run the extracted program with WeeWX's Python environment:
+
+```sh
+PYTHONPATH=/path/to/station/bin python /path/to/extracted/usr/local/bin/dwd-mosmix --help
+```
+
+Choose provider and output options using the reference. `etc/cron.hourly/dwd`
+is an optional scheduling example. Installation creates no cron job. Adapt its
+old paths before using it. Downloaded maps and icons retain their providers'
+usage conditions; see the linked provider documentation.
+
+### Upgrade, removal and license
+
+Back up `weewx.conf`, custom templates and outputs, install the desired fixed
+catalog archive, and restart WeeWX. Remove with
+`weectl extension uninstall weatherforecasts`, then check any manually created
+command links and schedules. The project retains Johanna Roedenbeck's
+[GPLv3 license](LICENSE). No live provider endpoint was used for this review.
 
 ## Programs
 
@@ -322,7 +316,7 @@ station codes.
 
 If you do not specify otherwise the HTML file contains two tables,
 one for PC usage in horizontal orientation and one for phone
-usage in vertical orientation. By the CSS class `hidden-xs` 
+usage in vertical orientation. By the CSS class `hidden-xs`
 one of them is visible at the same time only. You can restrict
 the creation to one of the tables by using the `--orientation`
 option. Possible values are `h` and `v`.
@@ -331,11 +325,11 @@ The option `--icon-set` specifies the weather icon set to be used.
 Make sure to install the desired set to your website.
 
 The language option influences the weekday names only, for English
-and german the tool tips, too. `de` (german), `en` (English), 
-`fr` (french), `it` (italian), `cz` (czech), and `pl` (polish) are 
+and german the tool tips, too. `de` (german), `en` (English),
+`fr` (french), `it` (italian), `cz` (czech), and `pl` (polish) are
 available.
 
-The get data by the Open-Meteo API instead of the DWD, use the 
+The get data by the Open-Meteo API instead of the DWD, use the
 option `--open-meteo` and specify a weather model:
 
 --open-meteo=   | Country | Weather service          | Model
@@ -482,14 +476,14 @@ This script downloads the weather maps "Europe-North Atlantic" and
 
 Uses the `warnings.json` file downloaded by `wget-dwd` to create
 county wide warnings for counties in Germany. See german version
-of this readme for more details. 
+of this readme for more details.
 
 This script is deprecated.
 
 ### /etc/cron.hourly/dwd
 
 If you only use the WeeWX service and/or the searchlist extension
-out of this package, you do not need this script. 
+out of this package, you do not need this script.
 
 The script takes care to invoke all the scripts hourly. It should
 contain:
@@ -506,7 +500,7 @@ and add the required options, which may include `--open-meteo` and
 `--belchertown`.
 
 If you don't want to use the configuration out of the WeeWX configuration
-file `/etc/weewx/weewx.conf` you can replace `--weewx` by 
+file `/etc/weewx/weewx.conf` you can replace `--weewx` by
 `--config=/path/to/your/config_file`.
 
 ## WeeWX service
@@ -530,7 +524,7 @@ to put into section `[[current]]`:
 
   OpenWeather provides calculated data for every point on earth. You have
   to specifiy the geographic coordinates of the location, you want data
-  for. See 
+  for. See
   [OpenWeather wiki article](https://github.com/roe-dl/weewx-DWD/wiki/OpenWeather-(English))
   for details.
 
@@ -578,7 +572,7 @@ to put into section `[[current]]`:
             model = Wettermodell_laut_Liste_im_Abschnitt_dwd_mosmix
   ```
 
-  [Open-Meteo](https://open-meteo.com/) provides an API to get 
+  [Open-Meteo](https://open-meteo.com/) provides an API to get
   weather data out of different weather models of serveral big
   weather services of the world. The desired place is to be
   specified by geographic coordindates.
@@ -610,7 +604,7 @@ to put in section `[[forecast]]`:
   ```
 
   For the current day and the following three days the German Weather
-  Service (DWD) provides text forecasts for the german federal states. 
+  Service (DWD) provides text forecasts for the german federal states.
   They are updated serveral times a day. See the abbrevations of the
   states to use for this purpose in the wiki article
   [Abkürzungen der Bundesländer beim Deutschen Wetterdienst](https://github.com/roe-dl/weewx-DWD/wiki/Abkürzungen-der-Bundesländer-beim-Deutschen-Wetterdienst)
@@ -715,7 +709,7 @@ to `weewx.conf`:
 To specify the locations to get data for see section Configuration.
 
 If you want to compare barometer readings according to the DWD rules
-with your own measurements, you can have this extension calculate 
+with your own measurements, you can have this extension calculate
 `barometerDWD` out of `pressure`, `outTemp`, and `outHumidity` by
 adding the following line to `weewx.conf`:
 
@@ -739,45 +733,45 @@ underscores as they are used to separate observation type name
 and unit there. This is especially important when using the
 Belchertown skin.
 
-* always: 
+* always:
   * `dateTime`: measuring timestamp
   * `interval`: measuring interval (1h for POI, 10min. for CDC)
-* Sensor group `air`: 
+* Sensor group `air`:
   * `pressure`: air pressure QFE
   * `barometer`: barometer
     (bei POI im Datensatz enthalten, bei CDC berechnet,
     wenn `pressure` und `outTemp` verfügbar)
   * `barometerDWD`: barometer according to the DWD formula
-    (CDC only, `pressure`, `outTemp`, and `outHumidity` 
+    (CDC only, `pressure`, `outTemp`, and `outHumidity`
     required to calculate)
-  * `outTemp`: air temperature at 2 m above the ground 
+  * `outTemp`: air temperature at 2 m above the ground
   * `extraTemp1`: air temperature at 5 cm above the ground
   * `outHumidity`: relative humidity
   * `dewpoint`: dewpoint
-* Sensor group `wind`: 
+* Sensor group `wind`:
   * `windSpeed`: wind speed
   * `windDir`: wind direction
-* Sensor group `gust`: 
+* Sensor group `gust`:
   * `windGust`: wind gust speed
   * `windGustDir`: wind gust direction
-* Sensor group `precipitation`: 
+* Sensor group `precipitation`:
   * `rainDur`: duration of precipitation during the measuring interval
   * `rain`: amount of precipitation during the measuring interval
   * `rainIndex`: kind of precipitation
-* Sensor group `solar`: 
-  * `solarRad` 
+* Sensor group `solar`:
+  * `solarRad`
   * `radiation`
   * `sunshineDur`: sunshine duration during the measuring interval
   * `LS_10`
-* POI only: 
+* POI only:
   * `cloudcover`: cloud cover in percent
   * `cloudbase`: cloud base
-  * `visibility`: visibility 
+  * `visibility`: visibility
   * `presentWeather`: coded weather
   * `snowDepth`: snow depth
   * `icon`: weather icon (file name)
-  * `icontitle`: description 
-* CDC only: 
+  * `icontitle`: description
+* CDC only:
   * `station_id`
   * `MESS_DATUM_ENDE`
   * `quality_level`
@@ -820,7 +814,7 @@ $presentweather(ww=$ww, n=$n, night=$night, wawa=$wawa, ...).attr
 
 The parameters are:
 
-* `ww`: the ww weather code or a list of weather codes 
+* `ww`: the ww weather code or a list of weather codes
 * `n`: cloud cover in precent (necessary for `ww`&lt;4 only)
 * `night`: `True` if the night time symbol is to be used.
 * `wawa`: the wawa weather code or a list of such weather codes
@@ -835,13 +829,13 @@ than 4.
 `attr` can be one of the following:
 
 * `ww`: the weather code chosen from the list
-* `text`: the description of the weather event 
+* `text`: the description of the weather event
 * `belchertown_icon`: the file name of the icon from the Belchertown set
 * `dwd_icon`: the file name of the icon from the DWD set
 * `aeris_icon`: the file name of the icon from the Aeris set
 * `wi_icon`: icon of the icon set from Erik Flowers
 * `svg_icon`: weather icon in SVG format
-* `svg_icon($width=128,$x=None,$y=None,$with_tooltip=True)`: 
+* `svg_icon($width=128,$x=None,$y=None,$with_tooltip=True)`:
   weather icon in SVG format, formatted
 * `svg_icon_filename`: filename of the SVG icon from
   [weathericons](https://github.com/roe-dl/weathericons)
@@ -852,7 +846,7 @@ than 4.
 * `okta`: cloud cover in Okta (if parameter `n` is given only)
 * `station`: station model as used in weather maps in SVG format
 
-The file name are for use with the `<img>` tag. 
+The file name are for use with the `<img>` tag.
 
 Example:
 ```
@@ -905,7 +899,7 @@ you can create a HTML table of the symbols.
 ### Create directory
 
 You need to create a sub-directory within the directory of the skin
-you are using. 
+you are using.
 
 Example:
 ```
@@ -999,11 +993,11 @@ Example:
             file = target_file
         [[[145220000000]]]
             provider = BBK
-            # section name is county 
+            # section name is county
             file = DL
         [[[Leipzig]]]
             provider = BBK
-            county = 147130000000 
+            county = 147130000000
             file = L
         [[[counties]]]
             provider = DWD
@@ -1030,7 +1024,7 @@ Example:
         #include_advance_warnings = 0 # optional
         # air quality provider (optional)
         # possible values: aeris uba{station_code}
-        #aqi_source = ... 
+        #aqi_source = ...
         # compass direction language (optional)
         # possible values: de, en, fr, it, cz, es, nl, no, gr
         #compass_lang = 'en' # optional
@@ -1055,7 +1049,7 @@ Example:
             provider = DWD
             model = bwk-map
         [[[Download3]]]
-            # warnings map 
+            # warnings map
             provider = DWD
             model = warning-map-with-symbols
             area = LZ
@@ -1077,7 +1071,7 @@ start with `/`.
 
 ### Belchertown skin
 
-There are special files available that are intended to be used for 
+There are special files available that are intended to be used for
 additional content. Simply create the file and fill it with what
 you want to display:
 * `index_hook_after_station_info.inc`
@@ -1165,7 +1159,7 @@ CSS class | Usage
 Using the option `--belchertown` with `dwd-mosmix` you can create the
 `forecast.json` file for the Belchertown skin. No changes to the
 code of the Belchertown skin is required. You only need to change
-some configuration option in `skin.conf` or the `[[Belchertown]]` 
+some configuration option in `skin.conf` or the `[[Belchertown]]`
 section of `[StdReport]` in `weewx.conf`.
 
 ```
@@ -1196,24 +1190,24 @@ section of `weewx.conf`.
         #include_advance_warnings = 0 # optional
         # air quality provider (optional)
         # possible values: aeris ubaXXXX
-        #aqi_source = ... 
+        #aqi_source = ...
         # compass direction language (optional)
         # possible values: de, en, fr, it, cz, es, nl, no, gr
         #compass_lang = 'en'
 ```
 
 The key `section` has to point to the section of the Belchertown skin
-in the `[StdReport]` section of `weewx.conf`. 
+in the `[StdReport]` section of `weewx.conf`.
 
 The key `warnings` sets the file name of a warnings file defined in
-section `[[warnings]]` if any. Using the optional key 
+section `[[warnings]]` if any. Using the optional key
 `include_advance_warnings` you can specify a timespan in seconds.
 All the warnings coming in effect within that timespan in future
 will be included additionally. The default is 0.
 
 The key `forecast` sets the id of the forecast location to be used.
 In case of Open-Meteo this is `openmeteo-latitude-longitude-model`,
-where 'latitude' and 'longitude' is to be replaced by the geographic 
+where 'latitude' and 'longitude' is to be replaced by the geographic
 coordinates of the location and 'model' by the weather model. In
 other cases this is the station id or station code of the location.
 
@@ -1345,7 +1339,7 @@ configured in `[WeatherServices]` section of `weewx.conf`.
   <div class="col-sm-12 snapshot-records-text">
     Wetterkarte (Luftdruck am Boden)
   </div>
-  
+
   <div class="col-sm-12">
     <img src="$relative_url/dwd/bwk_bodendruck_na_ana.png?v=<%=os.path.getmtime("/etc/weewx/skins/Belchertown-de/dwd/bwk_bodendruck_na_ana.png")%>" />
   </div>

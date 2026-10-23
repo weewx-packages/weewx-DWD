@@ -1,6 +1,14 @@
 # weewx-DWD
 
-* [English Version](https://github.com/roe-dl/weewx-DWD/blob/master/README-en.md) 
+Dieses Repository spiegelt [roe-dl/weewx-DWD](https://github.com/roe-dl/weewx-DWD).
+Das separat reparierte Katalogarchiv `0.0.0.post20261022` installiert den
+Wetterdienst-Service, Wettercode-Suchlisten und CAP-Warnmodule für WeeWX
+5.5–5.x mit Python 3.10–3.14. Ein Quellbranch-ZIP enthält diese
+Paketkorrekturen nicht. Dienste und eigenständige Programme haben
+unterschiedliche Installationswege.
+
+
+* [English Version](https://github.com/roe-dl/weewx-DWD/blob/master/README-en.md)
 * Icons und Symbole im SVG-Vektorgraphikformat siehe [images](https://github.com/roe-dl/weathericons)
 
 Wettersymbole in WeeWX darstellen sowie
@@ -35,7 +43,7 @@ Diese Daten können mit den Programmen bezogen werden:
   * aktuelle Meßwerte von offiziellen ZAMG-Wetterstationen
     (`user.weatherservices.DWDservice`)
 * über das Open-Meteo-API
-  * vorberechnete Wettervorhersagen auf der Basis von Modellen 
+  * vorberechnete Wettervorhersagen auf der Basis von Modellen
     verschiedener großer Wetterdienste für jeden Punkt der Erde
     (`dwd-mosmix`)
 * von OpenWeather
@@ -61,9 +69,9 @@ Die Daten werden aufbereitet als:
 
 > [!TIP]
 > Wenn Sie eine Visualisierung (Skin) suchen, die weewx-DWD direkt
-> unterstützt, können Sie sich 
+> unterstützt, können Sie sich
 > [Weather Data Center skin weewx-wdc](https://github.com/Daveiano/weewx-wdc)
-> ansehen. Die Konfiguration ist im 
+> ansehen. Die Konfiguration ist im
 > [dortigen Wiki](https://github.com/Daveiano/weewx-wdc/wiki/Support-for-weewx-DWD)
 > ausführlich beschrieben.
 
@@ -105,7 +113,7 @@ Die Daten werden aufbereitet als:
 
 # Melden von Fehlern
 
-Wenn Sie Fehler melden wollen oder Hilfe benötigen, 
+Wenn Sie Fehler melden wollen oder Hilfe benötigen,
 geben Sie bitte immer folgende Informationen mit an:
 * die komplette Zeile, mit der Sie das Programm aufgerufen haben
 * alles, was das Programm ausgegeben hat
@@ -138,96 +146,69 @@ pip install geopy
 pip install requests
 ```
 
-# Installation
+## Installation
 
-1) Herunterladen des Paketes von Github
+Installieren Sie `requests` in der Python-Umgebung von WeeWX. `geopy` ist für
+geografische Hilfsfunktionen optional.
 
-   ```shell
-   wget -O weewx-dwd.zip https://github.com/roe-dl/weewx-DWD/archive/master.zip
-   ```
-
-2) Aufrufen des Installationsprogramms
-
-   Installation unter WeeWX bis Version 4.X:
-
-   ```shell
-   sudo wee_extension --install weewx-dwd.zip
-   ```
-
-   Installation unter WeeWX ab Version 5.0 bei WeeWX als Paketinstallation:
-
-   ```shell
-   sudo weectl extension install weewx-dwd.zip
-   ```
-
-   Installation unter WeeWX ab Version 5.0 bei WeeWX als `pip`-Installation 
-   in eine virtuelle Umgebung:
-
-   ```shell
-   source ~/weewx-venv/bin/activate
-   weectl extension install weewx-dwd.zip
-   ```
-
-> [!CAUTION]
-> `sudo` darf auf keinen Fall verwendet werden, wenn WeeWX mittels `pip`
-> installiert wurde.
-
-3) Anpassen der Konfiguration
-
-   siehe Abschnitt [Konfiguration](#konfiguration)
-
-   Bei der `pip`-Installation muß in `capwarnings.py` der Pfad
-   `/usr/share/weewx` durch den tatsächlichen Pfad der WeeWX-Installation
-   ersetzt werden. Für den manuellen Aufruf gilt das auch für die
-   anderen Dateien.
-
-4) Neustart von WeeWX
-
-   bei SysVinit-Systemen:
-
-   ```shell
-   sudo /etc/init.d/weewx stop
-   sudo /etc/init.d/weewx start
-   ```
-
-   bei systemd-Systemen:
-
-   ```shell
-   sudo systemctl stop weewx
-   sudo systemctl start weewx
-   ```
-
-
-Manuelle Installation:
-
-Packen Sie die ZIP-Datei aus.
-
-Kopieren Sie alle Dateien aus dem Verzeichnis `bin/user/` ins 
-Erweiterungsverzeichnis von WeeWX, typischerweise `/usr/share/weewx/user`
-bei WeeWX 4 und `/etc/weewx/bin/user` bei WeeWX 5.
-
-Kopieren Sie `usr/local/bin/dwd-mosmix`, `usr/local/bin/dwd-warnings`,
-`usr/local/bin/html2ent.ansi` und `usr/local/bin/wget-dwd` nach
-`/usr/local/bin` und machen Sie sie mit `chmod +x Dateiname` ausführbar.
-
-Legen Sie folgende Links an:
-```shell
-sudo ln -s /usr/share/weewx/user/capwarnings.py /usr/local/bin/bbk-warnings
-sudo ln -s /usr/share/weewx/user/capwarnings.py /usr/local/bin/dwd-cap-warnings
-sudo ln -s /usr/share/weewx/user/capwarnings.py /usr/local/bin/msc-warnings
+```sh
+python -m pip install requests
+weectl extension install https://github.com/weewx-packages/catalog/releases/download/dwd/v0.0.0.post20261022/dwd-0.0.0.post20261022.tar.gz
 ```
 
-Wenn sich `capwarnings.py` nicht unter `/usr/share/weewx/user` befindet,
-müssen Sie den Pfad entsprechend anpassen.
+Nutzen Sie das `weectl` Ihrer WeeWX-Umgebung. Für eine andere Station ergänzen
+Sie `--config /pfad/zu/weewx.conf`. Bei einer Paketinstallation können erhöhte
+Rechte nötig sein; bei pip aktivieren Sie die WeeWX-Venv.
 
-Sollten die Aufrufe von `bbk-warnings` oder `dwd-cap-warnings` zu 
-Fehlermeldungen führen, können Sie auch die älteren Dateien
-`usr/local/bin/bbk-warnings` und `usr/local/bin/dwd-cap-warnings`
-nutzen, indem Sie sie nach `/usr/local/bin` kopieren und ausführbar machen.
+Der Installer registriert `user.weatherservices.DWDservice` in `data_services`
+und installiert die Module aus `bin/user` im Benutzerverzeichnis der Station.
+Konfigurieren Sie `[WeatherServices]` gemäß den Beispielen unten. Ersetzen
+Sie die Platzhalter für Ausgabeordner, Icons und gewünschte Datenprodukte.
+Der Ausgabeordner muss für WeeWX schreibbar sein. Anschließend WeeWX selbst
+neu starten, etwa mit `sudo systemctl restart weewx` bei systemd.
 
-Die Icons (Symbole) können beim DWD heruntergeladen werden:
-* [Warnicons](https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/icons/warnicons_nach_stufen_50x50_zip.zip?__blob=publicationFile&v=2) 
-* [Wettericons](https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/icons/wettericons_zip.zip?__blob=publicationFile&v=3)
+Für Wettersymbole allein genügt die Suchlisten-Erweiterung:
+
+```ini
+[CheetahGenerator]
+    search_list_extensions = user.weathercodes.WeatherSearchList
+```
+
+Ergänzen Sie bestehende Suchlisten, statt sie zu ersetzen. Die Tags und
+Datenprodukte sind in der Referenz unten beschrieben.
+
+### Eigenständige Programme
+
+Die CAP-Aufrufe `dwd-cap-warnings`, `bbk-warnings` und `msc-warnings` werden
+unter `bin/commands` der Station verlinkt, nicht systemweit. Verwenden Sie
+deren vollständigen Pfad und setzen Sie bei Bedarf `PYTHONPATH` auf das
+`bin`-Verzeichnis der Station. Beispiel für eine Paketinstallation:
+
+```sh
+PYTHONPATH=/etc/weewx/bin python /etc/weewx/bin/commands/dwd-cap-warnings --help
+```
+
+`dwd-mosmix` und die alten Hilfsprogramme liegen unter `usr/local/bin` im
+Quellbaum und Archiv, werden aber nicht durch den Kataloginstaller kopiert.
+Für MOSMIX können Sie das entpackte Programm mit WeeWXs Python ausführen:
+
+```sh
+PYTHONPATH=/pfad/zur/station/bin python /pfad/zum/entpackten/usr/local/bin/dwd-mosmix --help
+```
+
+Wählen Sie die Datenquelle und Ausgabeoptionen anhand der Referenz.
+`etc/cron.hourly/dwd` ist ein optionales Beispiel. Der Installer richtet
+keinen Cronjob ein. Alte Pfade in diesem Beispiel müssen vor Nutzung an die
+Station angepasst werden. Zusätzliche Karten-/Icon-Dateien haben eigene
+Nutzungsbedingungen; siehe die verlinkten Anbieter.
+
+### Aktualisieren und entfernen
+
+Sichern Sie `weewx.conf`, eigene Vorlagen und Ausgaben, installieren Sie das
+gewünschte feste Katalogarchiv und starten Sie WeeWX neu. Entfernen mit
+`weectl extension uninstall weatherforecasts`; selbst angelegte Kommando-Links
+und Zeitpläne prüfen. [LICENSE](LICENSE) enthält die ursprüngliche GPLv3-Lizenz.
+Externe Dienste und Geräte wurden für diese Dokumentation nicht live geprüft.
 
 # Programme
 
@@ -244,7 +225,7 @@ Dieses Script lädt die Wetterkarten sowie die nötigen Dateien für `dwd-warnin
 Dieses Python-Script bereitet die JSONP-Datei des DWD mit den Wetterwarnungen auf und erzeugt daraus HTML-Texte.
 Dazu müssen die gewünschten Landkreise in der vom DWD benutzten Schreibweise
 in `weewx.conf` eingetragen werden. Die korrekte Schreibweise der Landkreise
-kann der Datei 
+kann der Datei
 [warncellids.csv](https://www.dwd.de/DE/leistungen/opendata/help/warnungen/cap_warncellids_csv.html)
 oder dem
 [Wiki](https://github.com/roe-dl/weewx-DWD/wiki/Namen-der-Landkreise-in-der-Schreibweise-des-Deutschen-Wetterdienstes)
@@ -299,7 +280,7 @@ Options:
 
 > [!CAUTION]
 > Wurde WeeWX mittels `pip` installiert, muß die Option `--config` anstelle
-> von `--weewx` verwendet werden. 
+> von `--weewx` verwendet werden.
 
 ## dwd-mosmix
 
@@ -309,8 +290,8 @@ die `forecast.json`-Datei für die Belchertown-Skin erzeugen.
 
 Datenquelle sind entweder die MOSMIX-Vorhersagen des Deutschen
 Wetterdienstes (DWD) oder die vom Open-Meteo-Dienst bereitgestellten
-Vorhersagen auf der Basis des jeweils ausgewählten Wettermodells. 
-Die MOSMIX-Vorhersagen basieren auf den Modellen ICON des DWD 
+Vorhersagen auf der Basis des jeweils ausgewählten Wettermodells.
+Die MOSMIX-Vorhersagen basieren auf den Modellen ICON des DWD
 und IFS des ECMWF und werden mit zusätzlichen Informationen verfeinert.
 
 Zur Darstellung sind folgende Ressourcen nötig:
@@ -360,21 +341,21 @@ Options:
 ```
 
 Es können mehrere der unter "Commands" aufgeführten Optionen gleichzeitig
-benutzt werden. 
+benutzt werden.
 
 > [!CAUTION]
 > Wurde WeeWX mittels `pip` installiert, muß die Option `--config` anstelle
-> von `--weewx` verwendet werden. 
+> von `--weewx` verwendet werden.
 
-Der DWD bietet eine Liste der 
+Der DWD bietet eine Liste der
 [Stationscodes](https://www.dwd.de/DE/leistungen/met_verfahren_mosmix/mosmix_stationskatalog.cfg?view=nasPublication&nn=16102)
 zum Herunterladen an.
 Nur für die dort aufgeführten Orte sind Vorhersagen beim DWD
 verfügbar. Als Code ist der Wert aus der Spalte "id" zu
-verwenden. 
+verwenden.
 
 Die HTML-Datei enthält, wenn nicht anders konfiguriert, zwei Tabellen,
-eine mit waagerechter Ausrichtung für PC-Bildschirme und eine in 
+eine mit waagerechter Ausrichtung für PC-Bildschirme und eine in
 senkrechter Ausrichtung für Telefone. Durch die HTML-Klassenzuordnung
 `hidden-xs` und `visible-xs-block` ist immer nur eine davon sichtbar.
 Mit der Option `--orientation` kann aber auch eine von beiden fest
@@ -386,7 +367,7 @@ Dateien erzeugt werden sollen, den der Belchertown-Skin oder den
 des Deutschen Wetterdienstes.
 
 Die Spracheinstellung betrifft nur die Wochentage, bei Englisch auch
-die Tooltips der Wettersymbole. Verfügbar ist `de` (Deutsch), 
+die Tooltips der Wettersymbole. Verfügbar ist `de` (Deutsch),
 `en` (Englisch), `fr` (Französisch), `it` (Italienisch),
 `cz` (Tschechisch) und `pl` (Polnisch).
 
@@ -424,15 +405,15 @@ von Open-Meteo als auch der betreffenden Wetterdienste zu beachten.
 
 Dieses Python-Script lädt Meldungen vom Bundesamt für Bevölkerungsschutz
 und Katastrophenhilfe (BBK) herunter. Dabei werden Meldungen ausgelassen,
-die ursprünglich vom DWD stammen, da diese mittels `dwd-cap-warnings` 
+die ursprünglich vom DWD stammen, da diese mittels `dwd-cap-warnings`
 besser verarbeitet werden können.
 
-Die Warnungen werden vom BBK nur auf Landkreisebene, nicht auf 
+Die Warnungen werden vom BBK nur auf Landkreisebene, nicht auf
 Gemeindeebene, herausgegeben. Das bedeutet, daß die letzten sieben
 Stellen des ARS 0 sein müssen.
 
 Die ARS, für die Meldungen abzufragen sind, können in beim
-Programmaufruf auf der Kommanodozeile oder in der Konfiguration 
+Programmaufruf auf der Kommanodozeile oder in der Konfiguration
 angegeben werden.
 
 [Liste der Regionalschlüssel ARS der Landkreise](https://github.com/roe-dl/weewx-DWD/wiki/Namen-der-Landkreise-in-der-Schreibweise-des-Deutschen-Wetterdienstes)
@@ -471,7 +452,7 @@ Dieses Script sorgt dafür, daß Scripte regelmäßig aufgerufen werden.
 Zum Abruf von Wetterwarnungen wird
 ```shell
 /usr/local/bin/dwd-cap-warnings --weewx --resolution=city
-``` 
+```
 bzw.
 ```shell
 /usr/local/bin/dwd-cap-warnings --weewx --resolution=county
@@ -491,17 +472,17 @@ Aufruf zusammenzufassen.
 Neben den eigenständigen Programmen, die im vorigen Abschnitt beschrieben
 sind, gibt es noch einen WeeWX-Service, der in der für WeeWX
 üblichen Weise in das System integriert ist. Längerfristig soll er
-die Aufgabe der separaten Programme oder zumindeste deren Aufruf 
-übernehmen. Im Moment liefert er den Abruf von Istwerten von 
+die Aufgabe der separaten Programme oder zumindeste deren Aufruf
+übernehmen. Im Moment liefert er den Abruf von Istwerten von
 DWD- und ZAMG-Wetterstationen, Waldbrandgefahrenvorhersage,
-Biowetter- und Pollenvorhersage, Radarbilder und eine allgemeine 
+Biowetter- und Pollenvorhersage, Radarbilder und eine allgemeine
 Download-Funktion.
 
 ## Wetterdienste und Produkte/Wettermodelle
 
 Mit der Option `provider` wird eingestellt, von welchem Anbieter
 die Daten bezogen werden sollen. Die Option `model` spezifiziert
-dann ein Wettermodell oder Produkt von diesem Anbieter. 
+dann ein Wettermodell oder Produkt von diesem Anbieter.
 
 im Abschnitt `[[current]]` einzutragen:
 
@@ -536,7 +517,7 @@ im Abschnitt `[[current]]` einzutragen:
   ```
 
   Unter der Überschrift CDC werden die blanken Meßwerte zur Verfügung
-  gestellt. Dabei sind verschiedene Aktualisierungsraten und 
+  gestellt. Dabei sind verschiedene Aktualisierungsraten und
   Zusammenfassungen verfügbar. Momentan können hier die
   10-Minuten-Werte abgerufen werden.
 
@@ -561,7 +542,7 @@ im Abschnitt `[[current]]` einzutragen:
   ```
 
   [Open-Meteo](https://open-meteo.com/) stellt ein API zum Abruf von
-  Wetterdaten aus den Wettermodellen der großen Wetterdienste bereit. 
+  Wetterdaten aus den Wettermodellen der großen Wetterdienste bereit.
   Der gewünschte Ort ist in Form von Koordinaten anzugeben.
 
 im Abschnitt `[[radar]]` einzutragen:
@@ -584,7 +565,7 @@ im Abschnitt `[[forecast]]` einzutragen:
 
   Für den aktuellen und die drei folgenden Tage stellt der DWD eine
   Vorhersage auf Bundeslandbasis in Textform bereit. Die Bereitstellung
-  erfolgt unregelmäßig mehrmals am Tag. 
+  erfolgt unregelmäßig mehrmals am Tag.
   Die hier gültigen Kennungen der Bundesländer sind im Wiki-Artikel
   [Abkürzungen der Bundesländer beim Deutschen Wetterdienst](https://github.com/roe-dl/weewx-DWD/wiki/Abkürzungen-der-Bundesländer-beim-Deutschen-Wetterdienst)
   in Spalte VHDL zu finden. Immer zum Ende des Archiv-Intervalls
@@ -685,17 +666,17 @@ im Abschnit `[[download]]` einzutragen:
 
   Es können beliebige Dateien von Webservern heruntergeladen werden.
   Jeweils kurz vor dem Ende des Archiv-Intervalls wird geprüft, ob es
-  von der Datei auf dem Server ein Update gibt. Wenn ja, wird es 
+  von der Datei auf dem Server ein Update gibt. Wenn ja, wird es
   heruntergeladen und gespeichert, wenn nein, bleibt alles, wie es ist.
   Das Herunterladen geschieht so rechtzeitig, daß die Datei beim nächsten
-  Reporterzeugungslauf verarbeitet werden kann. `from_encoding` 
+  Reporterzeugungslauf verarbeitet werden kann. `from_encoding`
   beschreibt die Codierung der Datei auf dem Server, `to_encoding` die
   Codierung, in der die Datei gespeichert werden soll. Fehlen die
-  beiden Schlüssel, wird die Datei unverändert gespeichert. 
+  beiden Schlüssel, wird die Datei unverändert gespeichert.
 
 ## Einbinden in WeeWX
 
-Um den Dienst in WeeWX zu aktivieren, muß er in `weewx.conf` 
+Um den Dienst in WeeWX zu aktivieren, muß er in `weewx.conf`
 eingetragen werden:
 
 ```
@@ -710,7 +691,7 @@ Zur Konfiguration, von welchen Stationen Daten abgerufen werden
 sollen, siehe Abschnitt "Konfiguration".
 
 Sollen Luftdruckwerte nach den Regeln des DWD mit den eigenen Meßwerten
-verglichen werden, kann die Größe `barometerDWD` auch für die eigene 
+verglichen werden, kann die Größe `barometerDWD` auch für die eigene
 Station aus `pressure`, `outTemp` und `outHumidity` berechnet werden.
 Dazu ist in `weewx.conf` einzutragen:
 
@@ -723,7 +704,7 @@ Dazu ist in `weewx.conf` einzutragen:
 
 Wird die Reporterzeugung dabei zu langsam, sollte `barometerDWD`
 in die Datenbank aufgenommen werden. Dazu ist zuerst WeeWX zu
-stoppen und ein Backup der Datenbank anzulegen. Anschließend kann 
+stoppen und ein Backup der Datenbank anzulegen. Anschließend kann
 die Größe mit dem folgenden Befehl in die Datenbank aufgenommen werden:
 
 Bei WeeWX 4.X:
@@ -757,52 +738,52 @@ Für die Außentemperatur `outTemp` wäre das bei einem Präfix
 
 Wenn die Daten auch per MQTT ausgegeben werden sollen, empfiehlt
 es sich, im Präfix *keine* Unterstreichstriche zu verwenden,
-da diese in den MQTT-Topics zur Trennung von Meßgrößenname und Einheit 
+da diese in den MQTT-Topics zur Trennung von Meßgrößenname und Einheit
 genutzt werden. Das gilt ganz besonders bei Nutzung der
 Belchertown-Skin.
 
 ### aktuelle Meßwerte von Wetterstationen DWD-POI, DWD-CDC, ZAMG
 
 Folgende Meßgrößen sind definiert, aber nicht immer verfügbar:
-* immer: 
-  * `dateTime`: Zeitstempel der Messung 
+* immer:
+  * `dateTime`: Zeitstempel der Messung
   * `interval`: Meßinterval (1h bei POI, 10min. bei CDC)
-* Sensorgruppe `air`: 
+* Sensorgruppe `air`:
   * `pressure`: Stationsluftdruck QFE
   * `barometer`: auf Meeresniveau umgerechneter Luftdruck
     (bei POI im Datensatz enthalten, bei CDC berechnet,
     wenn `pressure` und `outTemp` verfügbar)
-  * `barometerDWD`: nach der Formel des DWD auf Meeresniveau 
+  * `barometerDWD`: nach der Formel des DWD auf Meeresniveau
     umgerechneter Luftdruck (nur bei CDC und nur wenn
     `pressure`, `outTemp` und `outHumidity` verfügbar)
-  * `outTemp`: Lufttemperatur 2m über dem Boden 
+  * `outTemp`: Lufttemperatur 2m über dem Boden
   * `extraTemp1`: Lufttemperatur 5cm über dem Boden
   * `outHumidity`: relative Luftfeuchtigkeit
   * `dewpoint`: Taupunkttemperatur
-* Sensorgruppe `wind`: 
-  * `windSpeed`: Windgeschwindigkeit 
+* Sensorgruppe `wind`:
+  * `windSpeed`: Windgeschwindigkeit
   * `windDir`: Windrichtung
-* Sensorgruppe `gust`: 
-  * `windGust`: Böengeschwindigkeit 
+* Sensorgruppe `gust`:
+  * `windGust`: Böengeschwindigkeit
   * `windGustDir`: Böenrichtung
-* Sensorgruppe `precipitation`: 
-  * `rainDur`: Niederschlagsdauer im Meßintervall 
-  * `rain`: Niederschlagsmenge im Meßintervall 
+* Sensorgruppe `precipitation`:
+  * `rainDur`: Niederschlagsdauer im Meßintervall
+  * `rain`: Niederschlagsmenge im Meßintervall
   * `rainIndex`: Niederschlagsart
-* Sensorgruppe `solar`: 
-  * `solarRad` 
+* Sensorgruppe `solar`:
+  * `solarRad`
   * `radiation`
-  * `sunshineDur`: Sonnenscheindauer im Meßintervall 
+  * `sunshineDur`: Sonnenscheindauer im Meßintervall
   * `LS_10`
-* nur bei POI: 
+* nur bei POI:
   * `cloudcover`: Wolkenbedeckung in Prozent
-  * `cloudbase`: Höhe der Wolkenunterkante 
-  * `visibility`: Sichtweite 
-  * `presentWeather`: codierter Wetterzustand 
+  * `cloudbase`: Höhe der Wolkenunterkante
+  * `visibility`: Sichtweite
+  * `presentWeather`: codierter Wetterzustand
   * `snowDepth`: Schneehöhe
-  * `icon`: Symbol des Wetterzustandes (Dateiname) 
+  * `icon`: Symbol des Wetterzustandes (Dateiname)
   * `icontitle`: Beschreibung dazu
-* nur bei CDC: 
+* nur bei CDC:
   * `station_id`
   * `MESS_DATUM_ENDE`
   * `quality_level`
@@ -811,7 +792,7 @@ Folgende Meßgrößen sind definiert, aber nicht immer verfügbar:
   * `longitude`: geographische Länge der Station
   * `altitude`: Höhe der Station
 
-`icon`, `icontitle`, `station_id` und `MESS_DATUM_ENDE` sind 
+`icon`, `icontitle`, `station_id` und `MESS_DATUM_ENDE` sind
 Textfelder, die nur mit `.raw` benutzt werden können.
 
 ### aktuelle Werte aus den Biowetter- und Pollenvorhersagen
@@ -851,9 +832,9 @@ Die Wettervorhersage und auch manche Meßgeräte liefern einen Code `ww` für da
 aktuelle Wetter, wie er von der WMO standardisiert worden ist. Diesen
 Codes ist jeweils ein passends Icon zugeordnet. Beim Erzeugen der
 Wettervorhersagen mit `dwd-mosmix` wird das Icon zugeordnet und in
-die Tabelle eingefügt. 
+die Tabelle eingefügt.
 
-Steht der Wert dagegen zum Beispiel als Meßgröße zur Verfügung, dann kann 
+Steht der Wert dagegen zum Beispiel als Meßgröße zur Verfügung, dann kann
 man diese Searchlist-Erweiterung benutzen, um das zum Code passende Icon
 darzustellen.
 
@@ -879,7 +860,7 @@ Die Parameter sind:
    der "schlimmste" verwendet wird
 * `n`: die Wolkenbedeckung in Prozent (nur bei $ww<4 nötig)
 * `night`: `True`, wenn das Nachtsymbol verwendet werden soll
-* `wawa`: der Wettercode w<sub>a</sub>w<sub>a</sub> oder eine Liste von 
+* `wawa`: der Wettercode w<sub>a</sub>w<sub>a</sub> oder eine Liste von
    Wettercodes, von denen der "schlimmste" verwendet wird
 * Im Falle von `station` als `attr` können weitere Parameter
   hinzugefügt werden, die Meßgrößen bestimmen, die mit in die
@@ -898,13 +879,13 @@ auch `wawa` vorhanden sind, wird `ww` verwendet und `wawa` ignoriert.
 * `aeris_icon`: Dateiname des Icons aus dem Aeris-Icon-Satz
 * `wi_icon`: Icon aus dem Icon-Satz von Erik Flowers
 * `svg_icon`: Wetter-Icon im SVG-Format
-* `svg_icon($width=128,$x=None,$y=None,$with_tooltip=True)`: 
-  Wetter-Icon im SVG-Format 
+* `svg_icon($width=128,$x=None,$y=None,$with_tooltip=True)`:
+  Wetter-Icon im SVG-Format
   mit Größenangabe und Koordinaten
 * `svg_icon_filename`: Dateiname des SVG-Icons aus dem Wettersymbolesatz
   in [weathericons](https://github.com/roe-dl/weathericons)
 * `wmo_symbol`: Symbol der Meteorologen für den Wetterzustand
-* `wmo_symbol($width,color=$color,None_string=None)`: Symbol der Meteorologen für den 
+* `wmo_symbol($width,color=$color,None_string=None)`: Symbol der Meteorologen für den
   Wetterzustand mit Größenangabe und optionaler Farbangabe.
 * `n`: Wolkenbedeckung in Prozent (nur wenn nur `n` übergeben wurde)
 * `okta`: Wolkenbedeckung in Okta (nur wenn nur `n` übergeben wurde)
@@ -959,7 +940,7 @@ können alle WMO-Symbole als SVG-Dateien in "Zielverzeichnis" geschrieben
 werden. Diese Dateien können dann mit dem `<img>`-Tag in Webseiten
 eingefügt werden.
 
-Mit 
+Mit
 ```shell
 python3 /usr/share/weewx/user/weathercodes.py --print-ww-tab >wmo4677.inc
 python3 /usr/share/weewx/user/weathercodes.py --print-wawa-tab >wmo4680.inc
@@ -979,11 +960,11 @@ Die Warnungen in der JSONP-Datei `warnings.json` sind nach Landkreisen geglieder
 
 ## Verzeichnis anlegen
 
-Im Verzeichnis der Visualisierung (skin), wo die Meldungen des DWD 
-angezeigt werden sollen, muß ein Unterverzeichnis (Ordner) `dwd` angelegt 
-werden. (Es sind auch andere Namen möglich.) In das Skript `wget-dwd` 
+Im Verzeichnis der Visualisierung (skin), wo die Meldungen des DWD
+angezeigt werden sollen, muß ein Unterverzeichnis (Ordner) `dwd` angelegt
+werden. (Es sind auch andere Namen möglich.) In das Skript `wget-dwd`
 (soweit noch verwendet, es ist veraltet)
-sowie die Konfigurationsdatei `weewx.conf` (siehe unten) muß der 
+sowie die Konfigurationsdatei `weewx.conf` (siehe unten) muß der
 komplette Pfad dieses Verzeichnisses eingetragen werden.
 
 Beispiel:
@@ -1075,7 +1056,7 @@ Beispiel:
             # optional darzustellende Wetterelemente anstelle des defaults
             #observations_daily = ww, TTTmax, TTTmin, windchill, FFavg, DDavg, RR1c, Rd10, Neffavg, RSunD, Rad1hsum, VVmin
             #observations_hourly = TTT, humidity , FF , DD , RR1c , R101 , PPPP , Rad1h
-            # Was würde eine PV-Anlage an dem Tag bringen? 
+            # Was würde eine PV-Anlage an dem Tag bringen?
             #pv_factor = 10.0 # Fläche * Wirkungsgrad
         [[[SN20]]]
             # Waldbrandgefahrenvorhersage
@@ -1141,12 +1122,12 @@ Beispiel:
             county = county_name
             file = target_file
         [[[145220000000]]]
-            provider = BBK 
+            provider = BBK
             # Die Überschrift ist die Kreiskennung.
             file = DL
         [[[Leipzig]]]
             provider = BBK
-            county = 147130000000 
+            county = 147130000000
             file = L
         [[[counties]]]
             provider = DWD
@@ -1171,7 +1152,7 @@ Beispiel:
         forecast = P0291
         # schließe Warnungen ein, die die angegebene Zahl von Sekunden in
         # der Zukunft gültig werden (optional)
-        #include_advance_warnings = 0 
+        #include_advance_warnings = 0
         # Quelle für Luftqualtitätsdaten (optional)
         # mögliche Werte: aeris, ubaXXXX
         #aqi_source = ...
@@ -1220,7 +1201,7 @@ tatsächlichen Verhältnissen entsprechend einzutragen. Die Bezeichnungen
 sind der Datei warncellids.csv zu entnehmen, die beim DWD heruntergeladen
 werden kann.
 
-**Beachte**: Der Pfad bei `icons` bezieht sich auf den Web-Server. 
+**Beachte**: Der Pfad bei `icons` bezieht sich auf den Web-Server.
 Er darf nicht mit `/` beginnen.
 
 Für jeden Landkreis, für den Warnungen angezeigt werden sollen, muß
@@ -1353,7 +1334,7 @@ Die folgende Tabelle richtet sich an Nutzer, die sich mit CSS auskennen
 und das Aussehen der Vorhersage damit gestalten wollen, und erklärt,
 welche CSS-Klassen gesetzt werden:
 
-CSS-Klasse | Verwendung 
+CSS-Klasse | Verwendung
 -----------|------------
 `.dwdforecasttable` | alle Tabellen, gesetzt für `<table>`
 `.dwdforecasttable-symbol` | Tabellenkopffeld, das das Symbol des Wetterelements enthält
@@ -1391,7 +1372,7 @@ Wettervorhersage des DWD in die Belchertown-Skin integriert werden,
 **ohne daß Eingriffe in den Code nötig sind**. Nur die Konfigurationsoption
 `forecast_stale`
 muß geändert werden, entweder in `skin.conf` oder im Abschnitt der
-Skin in `weewx.conf`. Die Vorhersage muß natürlich auch grundsätzlich 
+Skin in `weewx.conf`. Die Vorhersage muß natürlich auch grundsätzlich
 eingeschaltet sein.
 
 ```
@@ -1420,10 +1401,10 @@ ergänzt werden:
         #compass_lang = 'en' # optional, alternative 'de','fr','cz'
 ```
 
-Der Schlüssel `section` muß den Namen des Abschnittes der Belchertown-Skin 
-unter `[StdReport]` angeben. Der Schlüssel `warnings` gibt das Kürzel der 
-zu verwendenden Warn-Datei aus dem Abschnitt `[[warning]]` an. 
-Der Schlüssel `forecast` gibt das Kürzel der Station an, deren Vorhersage 
+Der Schlüssel `section` muß den Namen des Abschnittes der Belchertown-Skin
+unter `[StdReport]` angeben. Der Schlüssel `warnings` gibt das Kürzel der
+zu verwendenden Warn-Datei aus dem Abschnitt `[[warning]]` an.
+Der Schlüssel `forecast` gibt das Kürzel der Station an, deren Vorhersage
 verwendet werden soll. Im Falle von Open-Meteo lautet die Angabe
 `openmeteo-latitude-longitude-model`, wobei 'latitude' durch die
 georaphische Breite, 'longitude' durch die geographische Länge und
@@ -1441,14 +1422,14 @@ Werte abgerufen werden sollen.
 *Beachte*: Bei Aeris ist die Anzahl der Anfragen pro Tag limitiert.
 Es ist darüber hinaus ein Account nötig.
 
-Eine Liste der Luftqualitätsmeßstationen des deutschen Umweltbundesamtes (UBA) 
+Eine Liste der Luftqualitätsmeßstationen des deutschen Umweltbundesamtes (UBA)
 erhält man mit
 ```shell
 usr/local/bin/dwd-mosmix --print-uba=meta,measure
 ```
 
 Beim Aufruf der Programme muß `dwd-cap-warnings` ungedingt vor `dwd-mosmix`
-aufgerufen werden, sonst werden unter Umständen veraltete Warnungen 
+aufgerufen werden, sonst werden unter Umständen veraltete Warnungen
 verarbeitet.
 
 In `/etc/cron.hourly/dwd` ist dann die folgende Zeile hinzufügen:
@@ -1466,12 +1447,12 @@ sudo /usr/local/bin/dwd-mosmix --weewx --belchertown Stationsname
 
 Mit der Option `--database` wird eine SQLITE-Datenbankdatei erzeugt,
 die von WeeWX zur Anzeige von Diagrammen genutzt werden kann. Die
-Datei wird in das durch `SQLITE_ROOT` definierte Verzeichnis 
+Datei wird in das durch `SQLITE_ROOT` definierte Verzeichnis
 geschrieben und erhält den Namen `dwd-forecast-Stationscode.sdb`.
 
 Die Werte sind grundsätzlich stündlich.
 
-Um damit Diagramme darstellen zu können, muß die Datenbank in 
+Um damit Diagramme darstellen zu können, muß die Datenbank in
 `weewx.conf` hinzugefügt werden:
 
 ```
@@ -1567,7 +1548,7 @@ Beispielkonfiguration in `skin.conf`:
 ## Wettervorhersage bei wechselndem Standort
 
 Ist die Wetterstation auf einem Fahrzeug angebracht, ändert sich regelmäßig
-der Standort. Tips dazu gibt der Wiki-Artikel 
+der Standort. Tips dazu gibt der Wiki-Artikel
 [Wettervorhersage im Wohnmobil](https://github.com/roe-dl/weewx-DWD/wiki/Wettervorhersage-im-Wohnmobil).
 
 ## Wetterkarte im HTML-Template
@@ -1578,7 +1559,7 @@ Der Pfad, hier `dwd`, ist entsprechend der eigenen Konfiguration anzupassen. Das
   <div class="col-sm-12 snapshot-records-text">
     Wetterkarte (Luftdruck am Boden)
   </div>
-  
+
   <div class="col-sm-12">
     <img src="$relative_url/dwd/bwk_bodendruck_na_ana.png?v=<%=os.path.getmtime("/etc/weewx/skins/Belchertown/dwd/bwk_bodendruck_na_ana.png")%>" />
   </div>
@@ -1592,7 +1573,7 @@ Damit die Wetterkarte auch mit auf den Server hochgeladen wird, muß sie in `ski
     copy_always = ...,dwd/bwk_bodendruck_na_ana.png
 ```
 
-<del>Anstelle von `bwk_bodendruck_na_ana.png` (Europa-Nordatlantik) kann in den obigen Beispielen 
+<del>Anstelle von `bwk_bodendruck_na_ana.png` (Europa-Nordatlantik) kann in den obigen Beispielen
 auch `bwk_bodendruck_weu_ana.png` (West-Mittel-Europa) verwendet werden. Beide Karten werden
 von `wget-dwd` heruntergeladen.</del>
 
