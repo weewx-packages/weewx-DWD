@@ -128,37 +128,39 @@ von Tom Keffer lesen.
 
 # Voraussetzungen
 
-Für `dwd-mosmix` ist es vorteilhaft, `GeoPy` zu installieren.
-Wurde WeeWX mittels `pip` installiert, muß möglicherweise das Modul
-`requests` nachinstalliert werden.
+Nutzen Sie eine vorhandene WeeWX-Station. Requests ist erforderlich. GeoPy
+ist für geografische Hilfsfunktionen in `dwd-mosmix` optional.
 
-Wenn WeeWX über die Paketinstallation installiert wurde:
+Bei einer WeeWX-Paketinstallation unter Debian oder Raspberry Pi OS
+installieren Sie Requests in das System-Python:
 
-```shell
-sudo apt-get install python3-geopy
+```sh
+sudo apt install python3-requests
 ```
 
-Wenn WeeWX mittels `pip` in eine virtuelle Umgebung installiert wurde:
+Für GeoPy-Hilfsfunktionen installieren Sie zusätzlich `python3-geopy` mit APT.
 
-```shell
-source ~/weewx-venv/bin/activate
-pip install geopy
-pip install requests
+Bei einer pip-Installation aktivieren Sie zuerst die vorhandene virtuelle
+Umgebung, in der Ihr WeeWX-Dienst läuft. Sowohl `python` als auch `weectl`
+müssen aus dieser Umgebung kommen. Installieren Sie dann Requests:
+
+```sh
+python -m pip install 'requests'
 ```
+
+Für GeoPy-Hilfsfunktionen führen Sie in derselben Umgebung zusätzlich
+`python -m pip install 'geopy'` aus.
 
 ## Installation
 
-Installieren Sie `requests` in der Python-Umgebung von WeeWX. `geopy` ist für
-geografische Hilfsfunktionen optional.
+Nutzen Sie das `weectl` der oben gewählten WeeWX-Installation. Bei einer
+Paketinstallation verwenden Sie bei Bedarf `sudo`. Ergänzen Sie
+`--config /pfad/zu/weewx.conf`, wenn die Stationskonfiguration nicht
+automatisch gefunden wird.
 
 ```sh
-python -m pip install requests
 weectl extension install https://github.com/weewx-packages/catalog/releases/download/dwd/v0.0.0.post20261022/dwd-0.0.0.post20261022.tar.gz
 ```
-
-Nutzen Sie das `weectl` Ihrer WeeWX-Umgebung. Für eine andere Station ergänzen
-Sie `--config /pfad/zu/weewx.conf`. Bei einer Paketinstallation können erhöhte
-Rechte nötig sein; bei pip aktivieren Sie die WeeWX-Venv.
 
 Der Installer registriert `user.weatherservices.DWDservice` in `data_services`
 und installiert die Module aus `bin/user` im Benutzerverzeichnis der Station.
@@ -190,10 +192,15 @@ PYTHONPATH=/etc/weewx/bin python /etc/weewx/bin/commands/dwd-cap-warnings --help
 
 `dwd-mosmix` und die alten Hilfsprogramme liegen unter `usr/local/bin` im
 Quellbaum und Archiv, werden aber nicht durch den Kataloginstaller kopiert.
-Für MOSMIX können Sie das entpackte Programm mit WeeWXs Python ausführen:
+Für MOSMIX laden Sie das Archiv in ein leeres Arbeitsverzeichnis herunter
+und entpacken es. Installieren Sie vorher `curl` und `tar` und aktivieren
+Sie die Python-Umgebung von WeeWX:
 
 ```sh
-PYTHONPATH=/pfad/zur/station/bin python /pfad/zum/entpackten/usr/local/bin/dwd-mosmix --help
+curl -fL -o dwd.tar.gz https://github.com/weewx-packages/catalog/releases/download/dwd/v0.0.0.post20261022/dwd-0.0.0.post20261022.tar.gz
+mkdir dwd-source
+tar -xzf dwd.tar.gz -C dwd-source
+python dwd-source/weewx-DWD/usr/local/bin/dwd-mosmix --help
 ```
 
 Wählen Sie die Datenquelle und Ausgabeoptionen anhand der Referenz.

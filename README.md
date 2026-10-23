@@ -160,37 +160,38 @@ from Tom Keffer.
 
 ## Prerequisites
 
-You may install `GeoPy`. It is useful, but not required.
-In case you installed WeeWX by `pip` you may have to install `requests`
-as well.
+Use an existing WeeWX station. Requests is required. GeoPy is optional for
+geographic helpers in `dwd-mosmix`.
 
-If you installed WeeWX by packet installation:
+For WeeWX installed as a Debian or Raspberry Pi OS package, install Requests
+into the system Python:
 
-```shell
-sudo apt-get install python3-geopy
+```sh
+sudo apt install python3-requests
 ```
 
-If you installed WeeWX by pip installation into a virtual environment:
+To enable GeoPy helpers in that layout, also install `python3-geopy` with APT.
 
-```shell
-source ~/weewx-venv/bin/activate
-pip install geopy
-pip install requests
+For a pip installation, activate the existing virtual environment that runs
+your WeeWX service first. Both `python` and `weectl` must come from it. Then
+install Requests:
+
+```sh
+python -m pip install 'requests'
 ```
+
+To enable GeoPy helpers in that same environment, also run
+`python -m pip install 'geopy'`.
 
 ## Installation
 
-Install `requests` in WeeWX's Python environment. `geopy` is optional for
-geographic helper functions.
+Use the `weectl` from the WeeWX installation selected above. For a package
+installation, use `sudo` if required. Add `--config /path/to/weewx.conf` when
+your station configuration is not found automatically.
 
 ```sh
-python -m pip install requests
 weectl extension install https://github.com/weewx-packages/catalog/releases/download/dwd/v0.0.0.post20261022/dwd-0.0.0.post20261022.tar.gz
 ```
-
-Use the `weectl` from your WeeWX environment and add
-`--config /path/to/weewx.conf` for a different station. Package installations
-may require `sudo`; activate the WeeWX environment for pip installations.
 
 The installer registers `user.weatherservices.DWDservice` in `data_services`
 and installs the eight modules from `bin/user` into the station's user root.
@@ -222,10 +223,14 @@ PYTHONPATH=/etc/weewx/bin python /etc/weewx/bin/commands/dwd-cap-warnings --help
 
 `dwd-mosmix` and legacy helpers remain in `usr/local/bin` in the source/archive;
 the catalog installer does not copy those files into system directories.
-For MOSMIX, run the extracted program with WeeWX's Python environment:
+For MOSMIX, download and extract that archive in an empty working directory.
+With `curl` and `tar` installed and WeeWX's Python environment active, run:
 
 ```sh
-PYTHONPATH=/path/to/station/bin python /path/to/extracted/usr/local/bin/dwd-mosmix --help
+curl -fL -o dwd.tar.gz https://github.com/weewx-packages/catalog/releases/download/dwd/v0.0.0.post20261022/dwd-0.0.0.post20261022.tar.gz
+mkdir dwd-source
+tar -xzf dwd.tar.gz -C dwd-source
+python dwd-source/weewx-DWD/usr/local/bin/dwd-mosmix --help
 ```
 
 Choose provider and output options using the reference. `etc/cron.hourly/dwd`
